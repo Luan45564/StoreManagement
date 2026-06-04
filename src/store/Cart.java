@@ -61,4 +61,8 @@ public class Cart {
             entry -> entry.getKey().getPrice() * entry.getValue()
         ).sum();
     }
+
+    public Map<Product, Integer> getItems() {
+        return items;
+    }
 }

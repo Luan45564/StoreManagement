@@ -65,7 +65,7 @@ public class Store {
 
         Product selected = null;
 
-        for (Product p : stock.getAll()) {
+        for (Product p : cart.getItems().keySet()) {
             if (p.getId() == id) {
                 selected = p;
                 break;
@@ -74,6 +74,68 @@ public class Store {
 
         if (selected == null) {
             System.out.println("This product was not found");
+            return;
+        }
+
+        int quantity = 0;
+
+        while (quantity <= 0) {
+            System.out.print("Quantity: ");
+            quantity = scanner.nextInt();
+
+            if (quantity <= 0) {
+                System.out.println("Invalid quantity, try again: ");
+            }
+        }
+
+        cart.removeProduct(selected, quantity, stock);
+    }
+
+    private static void displayCart() {
+        cart.displayCart();
+
+        if (cart.getItems().isEmpty()) {
+            return;
+        }
+
+        System.out.println("1. Remover Pedido");
+        System.out.println("0. Voltar");
+
+        System.out.println("Escolha: ");
+
+        int option = scanner.nextInt();
+
+        switch (option) {
+            case 1 -> removeFromCart();
+            case 0 -> {}
+            default -> System.out.println("Invalid option, try again: ");
+        }
+    }
+
+    private static void checkout() {
+        cart.displayCart();
+
+        System.out.println("\nTotal: R$ %.2f".formatted(cart.getTotal()));
+
+        System.out.println("1. Confirmar Compra");
+        System.out.println("2. Voltar");
+        System.out.println("0. Encerrar Programa");
+
+        System.out.print("Escolha: ");
+
+        int option = scanner.nextInt();
+
+        switch (option) {
+            case 1 -> {
+                System.out.println("Your purchase has been completed, thank you for coming here!");
+                cart = new Cart();
+            }
+            case 2 -> System.out.println("Going back to the menu...");
+            case 0 -> {
+                System.out.println("Shutting down the system, see you later!");
+                System.exit(0);
+            }
+            default -> System.out.println("Invalid option");
         }
     }
 
@@ -85,7 +147,7 @@ public class Store {
             System.out.println("Supermercado");
             System.out.println("-".repeat(80));
 
-            System.out.println("1. Ver Produtos");
+            System.out.println("1. Fazer Compras");
             System.out.println("2. Ver Carrinho");
             System.out.println("3. Finalizar Compra");
             System.out.println("0. Sair");
@@ -93,6 +155,17 @@ public class Store {
             System.out.print("Escolha: ");
 
             option = scanner.nextInt();
+
+            switch (option) {
+                case 1 -> addToCart();
+                case 2 -> displayCart();
+                case 3 -> checkout();
+                case 0 -> System.out.println("See you later!");
+                default -> {
+                    System.out.println("Invalid option, try again: ");
+                    option = -1;
+                }
+            }
         }
     }
 }
